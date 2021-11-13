@@ -1,6 +1,6 @@
 import { TableProps as RcTableProps } from 'rc-table/lib/Table';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { any, throttle } from 'underscore';
+import _throttle from 'lodash/throttle';
 import {
     DataConvertType,
     NormalConverType,
@@ -437,7 +437,7 @@ function getVirtualConfig(
             '.' + className + ' .ant-table-body',
         )!;
         //节流函数，以避免过度渲染
-        const listener = throttle(() => {
+        const listener = _throttle(() => {
             setScrollTop(tableNode.current!.scrollTop);
             console.log('scrollTop', tableNode.current!.scrollTop, scroll!.y);
         }, 100);

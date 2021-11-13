@@ -92,7 +92,7 @@ type ColumnSchema = {
     rowSelectionColumnProps?: {
         type: 'radio' | 'checkbox';
     } & CheckboxColumnProps;
-    expandableRrops?: ExpandableRowProps;
+    expandableProps?: ExpandableRowProps;
     recursiveProps?: RecursiveRowProps;
     childrenProps?: ChildrenRowProps & {
         children: ColumnSchema[];
@@ -275,7 +275,7 @@ function getColumnSchemaInner(
                 {
                     ...columnBase,
                     type: 'expandableRow',
-                    expandableRrops: { ...config },
+                    expandableProps: { ...config },
                 },
             ];
         } else if (isRecursiveRowType(component)) {

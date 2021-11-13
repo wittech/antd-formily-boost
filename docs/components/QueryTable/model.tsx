@@ -1,4 +1,4 @@
-import { range } from 'underscore';
+import _range from 'lodash/range';
 export type User = {
     id: number;
     name: string;
@@ -20,7 +20,7 @@ export default class Model {
     private data: User[];
 
     constructor(size: number) {
-        this.data = range(size).map((single) => {
+        this.data = _range(size).map((single) => {
             return {
                 id: single,
                 name: 'fish_' + single,

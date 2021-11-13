@@ -25,13 +25,13 @@ function getExpandableRow(
             </ArrayIndexContextProvider>
         );
     };
-    const expandedIndex = expandableColumn.expandableRrops?.expandedIndex!;
+    const expandedIndex = expandableColumn.expandableProps?.expandedIndex!;
     const expandedRowKeys = flatDataInIndex(
         data,
         expandedIndex,
         '',
         0,
-        !!expandableColumn.expandableRrops?.defaultExpand,
+        !!expandableColumn.expandableProps?.defaultExpand,
         tableConfig.dataConvertProps.tree,
     );
     const onExpandedRowsChange = (newExpandedRowKeys: any) => {
@@ -48,7 +48,7 @@ function getExpandableRow(
         expandedRowRender: expandedRowRender,
         onExpandedRowsChange: onExpandedRowsChange,
         expandedRowKeys: expandedRowKeys,
-        ...expandableColumn.expandableRrops,
+        ...expandableColumn.expandableProps,
     };
 }
 

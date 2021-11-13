@@ -1,7 +1,7 @@
 import { Field, Form, onFieldInputValueChange } from '@formily/core';
 import { useMemo } from 'react';
 import useQuery, { UseQueryRequest } from './useQuery';
-import { throttle } from 'underscore';
+import _throttle from 'lodash/throttle';
 import { useCallback } from 'react';
 import { batch } from '@formily/reactive';
 import Result, { ResultSuccess, ResultFail } from './Result';
@@ -98,7 +98,7 @@ function useQueryTable(
         //感谢@https://github.com/everfire130，当使用leading为false的时候会与Select组件的动画撞车，导致Select组件掉帧
         //因此，不能用debounce为200的延迟，会产生Select组件的掉帧
         //也不能用throttle的leading设置为false的200延迟，也会掉帧
-        return throttle(submitFilter, 200);
+        return _throttle(submitFilter, 200);
     }, []);
 
     const resetFilter = useCallback(() => {

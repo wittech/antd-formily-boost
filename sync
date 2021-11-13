@@ -1,0 +1,8 @@
+#!/bin/bash
+for dir in "AntdFormilyBoost"
+do
+    rm -rf /Users/jiangyong/GitHub/appzoo-icejs/appzoo-master/src/components/$dir
+    mkdir -p /Users/jiangyong/GitHub/appzoo-icejs/appzoo-master/src/components/$dir
+    cp -r /Users/jiangyong/GitHub/antd-formily-boost/src/ /Users/jiangyong/GitHub/appzoo-icejs/appzoo-master/src/components/$dir
+    rm -rf /Users/jiangyong/GitHub/appzoo-icejs/appzoo-master/src/components/$dir/types.d.ts
+done
