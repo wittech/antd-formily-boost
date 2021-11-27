@@ -23,9 +23,9 @@ type DataType = {
     name: string;
     age: number;
 };
-let lastState: { data: DataType[]; paginaction: PaginationType } = observable({
+let lastState: { data: DataType[]; pagination: PaginationType } = observable({
     data: [],
-    paginaction: {
+    pagination: {
         //包括当前在哪一页，以及每页的大小是多少，序号从1开始
         current: 1,
         pageSize: 10,
@@ -52,8 +52,8 @@ export default () => {
                     name="data"
                     x-component="Table"
                     x-component-props={{
-                        //传递paginaction进去，注意，该数据要用observable包装的
-                        paginaction: 'paginaction',
+                        //传递pagination进去，注意，该数据要用observable包装的
+                        pagination: 'pagination',
                         paginationProps: {},
                     }}
                 >
@@ -84,7 +84,7 @@ export default () => {
             </SchemaField>
 
             <FormConsumer>
-                {() => <div>{JSON.stringify(form.values.paginaction)}</div>}
+                {() => <div>{JSON.stringify(form.values.pagination)}</div>}
             </FormConsumer>
         </Form>
     );

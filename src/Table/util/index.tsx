@@ -14,19 +14,19 @@ function getDataInIndex(data: any[], index: string): any {
                 if (index < current.length && index >= 0) {
                     current = current[index];
                 } else {
-                    //越界了
+                    // 越界了
                     return undefined;
                 }
             } else {
                 if (current.hasOwnProperty(single)) {
                     current = current[single];
                 } else {
-                    //没有该key
+                    // 没有该key
                     return undefined;
                 }
             }
         } else {
-            //非Object与Array，退出吧
+            // 非Object与Array，退出吧
             return undefined;
         }
     }
@@ -36,10 +36,10 @@ function getDataInIndex(data: any[], index: string): any {
 function setDataInIndex(data: any[], index: string, target: any) {
     let [preIndex, lastIndex] = parseIndex(index);
 
-    //先查找前级的数据
+    // 先查找前级的数据
     const current = getDataInIndex(data, preIndex);
 
-    //再设置
+    // 再设置
     if (current) {
         current[lastIndex] = target;
     }
@@ -70,7 +70,7 @@ function flatDataInIndex(
     let result: string[] = [];
     for (var i = 0; i != data.length; i++) {
         let single = data[i];
-        //初始化每个值为false
+        // 初始化每个值为false
         if (single[dataIndex] === undefined) {
             single[dataIndex] = defaultValue;
         }
@@ -79,7 +79,7 @@ function flatDataInIndex(
             result.push(currentIndex);
         }
         if (dataConvert.type == 'recursive' || dataConvert.type == 'children') {
-            //当上下级关联的时候，提前终止
+            // 当上下级关联的时候，提前终止
             if (isEarilerStop && !single[dataIndex]) {
                 continue;
             }
@@ -116,14 +116,14 @@ function fillDataInIndex(
     oldSelectedRowKeys: string[],
     newSelectedRowKeys: string[],
 ) {
-    //先建立一个map
+    // 先建立一个map
     let newSelectedKeyMap: { [key in string]: boolean } = {};
     for (let i in newSelectedRowKeys) {
         let index = newSelectedRowKeys[i];
         newSelectedKeyMap[index] = true;
     }
 
-    //对于每个旧值，设置为false
+    // 对于每个旧值，设置为false
     for (let i = 0; i != oldSelectedRowKeys.length; i++) {
         let index = oldSelectedRowKeys[i];
         if (!newSelectedKeyMap[index]) {
@@ -131,7 +131,7 @@ function fillDataInIndex(
         }
     }
 
-    //对于每个新值，设置为true
+    // 对于每个新值，设置为true
     for (let i = 0; i != newSelectedRowKeys.length; i++) {
         let index = newSelectedRowKeys[i];
         setDataInIndex(data, index + '.' + dataIndex, true);

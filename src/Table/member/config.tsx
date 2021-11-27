@@ -131,10 +131,10 @@ function getColumnSchemaInner(
     schema: Schema,
     columnConfig: string,
 ): ColumnSchema[] {
-    //在当前实现中，Column层看成是Field
+    // 在当前实现中，Column层看成是Field
     let itemsSchema: Schema['items'] = schema.items;
     const items = Array.isArray(itemsSchema) ? itemsSchema : [itemsSchema];
-    //获取当前array的field
+    // 获取当前array的field
     let form = useForm();
     let field = useField();
     let columnConfigObject = getColumnConfig(
@@ -174,9 +174,9 @@ function getColumnSchemaInner(
     };
 
     const parseSource = (schema: Schema): ColumnSchema[] => {
-        //在渲染的时候，手动拿出每个Column的Field，并且将Schema作为保底逻辑
-        //这里的写法，其实是先取field数据，再去createField
-        //当第一次render的时候，Field不存在时，返回值为undefined
+        // 在渲染的时候，手动拿出每个Column的Field，并且将Schema作为保底逻辑
+        // 这里的写法，其实是先取field数据，再去createField
+        // 当第一次render的时候，Field不存在时，返回值为undefined
         let columnField = columnConfigObject[schema.name!];
         let component = schema['x-component'];
         let isVisible = getSingleColumnConfig(columnField, schema, 'x-visible');
@@ -210,7 +210,7 @@ function getColumnSchemaInner(
                 },
             ];
         } else if (isCheckboxColumnType(component)) {
-            //获取该列的信息
+            // 获取该列的信息
             const config: any = {};
             for (let key in new CheckboxColumnPropsKey()) {
                 config[key] = getSingleColumnComponentPropsConfig(
@@ -236,7 +236,7 @@ function getColumnSchemaInner(
                 },
             ];
         } else if (isRadioColumnType(component)) {
-            //获取该列的信息
+            // 获取该列的信息
             const config: any = {};
             for (let key in new RadioColumnPropsKey()) {
                 config[key] = getSingleColumnComponentPropsConfig(
@@ -259,7 +259,7 @@ function getColumnSchemaInner(
                 },
             ];
         } else if (isExpandableRowType(component)) {
-            //获取该列的信息
+            // 获取该列的信息
             const config: any = {};
             for (let key in new ExpandableRowPropsKey()) {
                 config[key] = getSingleColumnComponentPropsConfig(
@@ -342,7 +342,7 @@ function getColumnSchemaInner(
         return [];
     };
     const reduceProperties = (schema: Schema): ColumnSchema[] => {
-        //对于items里面的每个schema，每个Schema为Void字段，遍历它的Properties
+        // 对于items里面的每个schema，每个Schema为Void字段，遍历它的Properties
         if (schema.properties) {
             return schema.reduceProperties((current, schema) => {
                 return current.concat(parseSource(schema));
@@ -352,7 +352,7 @@ function getColumnSchemaInner(
         }
     };
     return items.reduce((current, schema) => {
-        //遍历每个items里面的schema
+        // 遍历每个items里面的schema
         if (schema) {
             return current.concat(reduceProperties(schema));
         }
@@ -372,7 +372,7 @@ function getAllNormalColumn(
                 !column.columnProps ||
                 column.columnProps.children.length == 0
             ) {
-                //叶子节点
+                // 叶子节点
                 let columnName: string;
                 if (isRefColumn) {
                     columnName = column.columnProps?.refColumnName + '';
@@ -381,7 +381,7 @@ function getAllNormalColumn(
                 }
                 result.set(columnName, column);
             } else {
-                //非叶子节点
+                // 非叶子节点
                 let childMapColumns = getAllNormalColumn(
                     column.columnProps.children,
                 );
@@ -418,13 +418,13 @@ function getSplitRowRender(
             splitRowColumn.splitProps &&
             splitRowColumn.splitProps.children.length != 0
         ) {
-            //有SplitRow，且SplitRow下的children不是空的
+            // 有SplitRow，且SplitRow下的children不是空的
             let splitChildInfo = getSplitRowRender(
                 splitRowColumn.splitProps.children,
                 false,
                 level + 1,
             );
-            //计算一下dataConvert
+            // 计算一下dataConvert
             let dataConvert: SplitRowConvertType = {
                 type: 'split',
                 splitIndex: [],
@@ -443,7 +443,7 @@ function getSplitRowRender(
                     ],
                 };
             }
-            //将子树上的SplitRow合并到本层上
+            // 将子树上的SplitRow合并到本层上
             let rowRenderTree: RowRenderTreeType = {
                 renderType: new Map<string, RowRenderType>(),
             };
@@ -464,7 +464,7 @@ function getSplitRowRender(
             };
         }
     }
-    //没有SplitRow，或者SplitRow下的children是空的
+    // 没有SplitRow，或者SplitRow下的children是空的
     let rowRenderTree: RowRenderTreeType = {
         renderType: new Map<string, RowRenderType>(),
     };
@@ -491,11 +491,11 @@ function getSingleChildrenRowRender(childrenRowSchema: ColumnSchema): {
         throw new Error(childrenRowSchema + '的childrenIndex为空!');
     }
 
-    //获取本层的RowRender与DataConvert
+    // 获取本层的RowRender与DataConvert
     let currentLevelInfo = getSplitRowRender(childrenSchema, false, 0);
 
     if (currentLevelInfo.dataConvert.type == 'split') {
-        //本层含有SplitRow的，立即返回
+        // 本层含有SplitRow的，立即返回
         let rowRenderTree: RowRenderTreeType = currentLevelInfo.rowRenderTree;
         let dataConvert: DataConvertType = {
             type: 'children',
@@ -505,7 +505,7 @@ function getSingleChildrenRowRender(childrenRowSchema: ColumnSchema): {
         return { rowRenderTree, dataConvert };
     }
 
-    //获取子层的RowRenderType
+    // 获取子层的RowRenderType
     let nestedChildrenRowSchema = childrenSchema.filter((column) => {
         return column.type == 'childrenRow';
     });
@@ -546,12 +546,12 @@ function fillRowRenderTreeToNormalColumn(
                 type: 'none',
             });
         } else {
-            //有RenderType
+            // 有RenderType
             const currentChildrenRender = rowRenderTree.renderType.get(key);
             value.columnProps?.rowRender.push(currentChildrenRender!);
         }
     });
-    //进一步渲染下一级的数据
+    // 进一步渲染下一级的数据
     if (rowRenderTree.children) {
         fillRowRenderTreeToNormalColumn(rowRenderTree.children, normalColumn);
     }
@@ -569,10 +569,10 @@ function getAllChildrenRowRender(
         return column.type == 'childrenRow';
     });
     if (childrenColumns.length == 0) {
-        //没有childrenRow，那就返回自身
+        // 没有childrenRow，那就返回自身
         return { rowRenderTree, dataConvert };
     } else {
-        //有childrenRow
+        // 有childrenRow
         let childrenColumn = childrenColumns[0];
 
         let rowRenderInfo = getSingleChildrenRowRender(childrenColumn);
@@ -600,10 +600,10 @@ function getAllRecursiveRowRender(
         return column.type == 'recursiveRow';
     });
     if (recursiveRows.length == 0) {
-        //没有recursiveRows，那就返回自身
+        // 没有recursiveRows，那就返回自身
         return { rowRenderTree, dataConvert };
     } else {
-        //有recursiveRows
+        // 有recursiveRows
         let recursiveRow = recursiveRows[0];
         let dataConvert: DataConvertType = {
             type: 'recursive',
@@ -628,27 +628,27 @@ function convertDataConvertTreeToList(dataConvert: DataConvertType): string[] {
 function calculateRowRenderAndDataConvert(
     columnSchema: ColumnSchema[],
 ): ColumnSchema[] {
-    //获取普通列
+    // 获取普通列
     let allNormalColumn = getAllNormalColumn(columnSchema);
 
-    //获取首层的SplitRow的RowRender
+    // 获取首层的SplitRow的RowRender
     let rowRenderAndDataConvert = getSplitRowRender(columnSchema, true, 0);
 
-    //获取ChildrenRow，以及包含其中的RowRender，及其嵌套以下的RowRender
+    // 获取ChildrenRow，以及包含其中的RowRender，及其嵌套以下的RowRender
     let rowRenderAndDataConvert2 = getAllChildrenRowRender(
         columnSchema,
         rowRenderAndDataConvert.rowRenderTree,
         rowRenderAndDataConvert.dataConvert,
     );
 
-    //获取RecursiveRow
+    // 获取RecursiveRow
     let rowRenderAndDataConvert3 = getAllRecursiveRowRender(
         columnSchema,
         rowRenderAndDataConvert2.rowRenderTree,
         rowRenderAndDataConvert2.dataConvert,
     );
 
-    //将所有RowRender合并到现有的normalColumn上面去
+    // 将所有RowRender合并到现有的normalColumn上面去
     fillRowRenderTreeToNormalColumn(
         rowRenderAndDataConvert3.rowRenderTree,
         allNormalColumn,
@@ -668,11 +668,11 @@ function calculateRowRenderAndDataConvert(
         },
     });
 
-    //原样返回，但是内部数据已经被修改过了
+    // 原样返回，但是内部数据已经被修改过了
     return columnSchema;
 }
 
-//在已知存在外部SplitRow的情况下，校验
+// 在已知存在外部SplitRow的情况下，校验
 function checkSplitRowSchemaInner(columnSchema: ColumnSchema[]) {
     let hasChildrenColumn: boolean = false;
     let hasRecursiveColumn: boolean = false;
@@ -716,7 +716,7 @@ function checkSplitRowSchemaInner(columnSchema: ColumnSchema[]) {
     return;
 }
 
-//在未知是否存在外部SplitRow的情况下，校验
+// 在未知是否存在外部SplitRow的情况下，校验
 function checkSplitRowSchema(columnSchema: ColumnSchema[]) {
     let hasChildrenColumn: boolean = false;
     let hasRecursiveColumn: boolean = false;
@@ -738,7 +738,7 @@ function checkSplitRowSchema(columnSchema: ColumnSchema[]) {
         }
     });
     if (splitColumns.length != 0) {
-        //有SplitRow的情况
+        // 有SplitRow的情况
         if (hasChildrenColumn) {
             throw new Error('SplitRow 与ChildrenRow不能在同一层级');
         }
@@ -758,9 +758,9 @@ function checkSplitRowSchema(columnSchema: ColumnSchema[]) {
         }
         checkSplitRowSchemaInner(splitColumns[0].splitProps!.children);
     } else {
-        //没有SplitRow的情况
+        // 没有SplitRow的情况
         if (childrenColumns.length != 0) {
-            //且递归检查ChildrenRow的内部
+            // 且递归检查ChildrenRow的内部
             checkSplitRowSchema(childrenColumns[0].childrenProps!.children);
         }
     }

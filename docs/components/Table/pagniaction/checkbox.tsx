@@ -23,9 +23,9 @@ type DataType = {
     name: string;
     age: number;
 };
-let lastState: { data: DataType[]; paginaction: PaginationType } = observable({
+let lastState: { data: DataType[]; pagination: PaginationType } = observable({
     data: [],
-    paginaction: {
+    pagination: {
         current: 1,
         pageSize: 10,
     },
@@ -51,7 +51,7 @@ export default () => {
                     name="data"
                     x-component="Table"
                     x-component-props={{
-                        paginaction: 'paginaction',
+                        pagination: 'pagination',
                         paginationProps: {
                             defaultPageSize: 10,
                             showQuickJumper: true,

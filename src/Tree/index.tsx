@@ -142,7 +142,7 @@ function getSelectAndCheckboxAndExpandConfig(
 ): SelectAndCheckboxAndExpandConfig {
     let result: SelectAndCheckboxAndExpandConfig = {};
 
-    //提取checkbox属性
+    // 提取checkbox属性
     if (props.checkbox) {
         result.checkable = true;
         result.checkStrictly = props.checkbox.checkStrictly;
@@ -179,7 +179,7 @@ function getSelectAndCheckboxAndExpandConfig(
         };
     }
 
-    //提取selected属性
+    // 提取selected属性
     if (props.select) {
         result.selectable = true;
         result.multiple = props.select.multiple;
@@ -208,9 +208,9 @@ function getSelectAndCheckboxAndExpandConfig(
         };
     }
 
-    //为什么要将expand属性放在字段上，而不是使用默认的设置
-    //因为这样的defaultExpand较为严格，antd的defaultExpandAll仅仅在第一次挂起组件的时候生效，后续刷新数据，或者添加数据以后，defaultExpandAll不起作用
-    //提取expand属性
+    // 为什么要将expand属性放在字段上，而不是使用默认的设置
+    // 因为这样的defaultExpand较为严格，antd的defaultExpandAll仅仅在第一次挂起组件的时候生效，后续刷新数据，或者添加数据以后，defaultExpandAll不起作用
+    // 提取expand属性
     result.autoExpandParent = props.expand?.autoExpandParent || false;
     let defaultExpand: boolean = !!props.expand?.defaultExpand;
     let expandIndex: string = props.expand?.expandIndex || '_expanded';
@@ -243,7 +243,7 @@ function getSelectAndCheckboxAndExpandConfig(
 }
 
 function getSchema() {
-    //获取schema
+    // 获取schema
     const schema = useFieldSchema();
     const itemsSchema: Schema['items'] = schema.items;
     let itemSchema: Schema;
@@ -278,13 +278,13 @@ const MyTree: MyTreeType = observer((props: PropsType) => {
         value = [];
     }
 
-    //获取递归的字段名
+    // 获取递归的字段名
     let recursiveIndex = props.recursiveIndex;
     if (!recursiveIndex || recursiveIndex == '') {
         recursiveIndex = 'children';
     }
 
-    //拉取数据
+    // 拉取数据
     const labelIndex = props.labelIndex || '';
     let dataSource: DataSourceType[] = getDataSourceRecursive(
         labelIndex,
@@ -294,7 +294,7 @@ const MyTree: MyTreeType = observer((props: PropsType) => {
         recursiveIndex,
     );
 
-    //渲染方式
+    // 渲染方式
     const labelRender = props.render;
     let titleRender: ((node: DataNode) => React.ReactNode) | undefined;
     if (labelIndex != '') {
@@ -311,14 +311,20 @@ const MyTree: MyTreeType = observer((props: PropsType) => {
         const itemSchema = getSchema();
         titleRender = (node: DataNode) => {
             const index = node.key as string;
-            return <RecursionField schema={itemSchema} name={index} />;
+            return (
+                <RecursionField
+                    schema={itemSchema}
+                    name={index}
+                    onlyRenderProperties
+                />
+            );
         };
     }
 
-    //获取虚拟滚动方式
+    // 获取虚拟滚动方式
     const virutalConfig = getVirtualConfig(props);
 
-    //获取选择方式
+    // 获取选择方式
     const selectAndCheckboxAndExpandConfig =
         getSelectAndCheckboxAndExpandConfig(props, value, recursiveIndex);
 
@@ -338,9 +344,9 @@ const MyTree: MyTreeType = observer((props: PropsType) => {
             disabled={props.disabled}
             blockNode={props.blockNode}
             showLine={props.showLine}
-            //虚拟滚动的配置
+            // 虚拟滚动的配置
             {...virutalConfig}
-            //选择等的配置
+            // 选择等的配置
             {...selectAndCheckboxAndExpandConfig}
         />
     );
@@ -348,7 +354,7 @@ const MyTree: MyTreeType = observer((props: PropsType) => {
 
 export default MyTree;
 
-//这段代码仅仅为为了生成API文档的
+// 这段代码仅仅为为了生成API文档的
 const MyTreeTypeFocDoc: React.FC<PropsType> = () => {
     return <span />;
 };

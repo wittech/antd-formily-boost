@@ -53,9 +53,9 @@ function checkBody(response: ResponseDataType): Result<any> {
 }
 
 function getCookie(name: string) {
-    var strcookie = document.cookie; //获取cookie字符串
-    var arrcookie = strcookie.split('; '); //分割
-    //遍历匹配
+    var strcookie = document.cookie; // 获取cookie字符串
+    var arrcookie = strcookie.split('; '); // 分割
+    // 遍历匹配
     for (var i = 0; i < arrcookie.length; i++) {
         var arr = arrcookie[i].split('=');
         if (arr[0] == name) {
@@ -89,19 +89,19 @@ const myRequest: RequestType = async (options: AxiosRequestConfig) => {
     }
     options.url = requestUrlPrefixKey + options.url;
 
-    //添加csrf头部
+    // 添加csrf头部
     if (!options.headers) {
         options.headers = {};
     }
     options.headers['X-XSRF-TOKEN'] = getCookie('XSRF-TOKEN');
 
-    //添加url随机数，以避免缓存
+    // 添加url随机数，以避免缓存
     if (!options.params) {
         options.params = {};
     }
     options.params['_t'] = new Date().valueOf();
 
-    //转换GET请求的data参数
+    // 转换GET请求的data参数
     if (options.method == 'GET' && options.data) {
         let queryStr = encodeURIComponent(JSON.stringify(options.data));
         if (options.url.indexOf('?') == -1) {

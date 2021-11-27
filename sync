@@ -5,4 +5,5 @@ do
     mkdir -p /Users/jiangyong/GitHub/appzoo-icejs/appzoo-master/src/components/$dir
     cp -r /Users/jiangyong/GitHub/antd-formily-boost/src/ /Users/jiangyong/GitHub/appzoo-icejs/appzoo-master/src/components/$dir
     rm -rf /Users/jiangyong/GitHub/appzoo-icejs/appzoo-master/src/components/$dir/types.d.ts
+    grep -rl "import React" /Users/jiangyong/GitHub/appzoo-icejs/appzoo-master/src/components/$dir | xargs sed -i '' 's/import React from ''react''/\/\/ import React from ''react''/g'
 done

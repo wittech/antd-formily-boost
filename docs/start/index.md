@@ -103,7 +103,7 @@ export default () => {
                         x-component="Table"
                         x-component-props={{
                             bordered: true,
-                            paginaction: lastState.pagniaction,
+                            pagination: lastState.pagniaction,
                             paginationProps: {
                                 defaultPageSize: 10,
                                 showQuickJumper: true,

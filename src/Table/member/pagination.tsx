@@ -30,22 +30,19 @@ function getFieldNeighborAddress(address: string, fieldName: string) {
 
 function getPagination(
     totalSize: number,
-    paginaction?: PaginationType,
+    pagination?: PaginationType,
     paginationProps?: PaginationPropsType,
 ): TablePaginationConfig | false {
-    if (!paginaction) {
+    if (!pagination) {
         return false;
     }
     const form = useForm();
     const field = useField();
     const address = field.address.toString();
-    const paginactionWrapper = {
+    const paginationWrapper = {
         setCurrent: (current: number) => {
             const field = form.createField({
-                name: getFieldNeighborAddress(
-                    address,
-                    paginaction + '.current',
-                ),
+                name: getFieldNeighborAddress(address, pagination + '.current'),
             });
             if (field) {
                 field.onInput(current);
@@ -55,7 +52,7 @@ function getPagination(
             const field = form.createField({
                 name: getFieldNeighborAddress(
                     address,
-                    paginaction + '.pageSize',
+                    pagination + '.pageSize',
                 ),
             });
             if (field) {
@@ -64,10 +61,7 @@ function getPagination(
         },
         getCurrent: (): number => {
             const field = form.createField({
-                name: getFieldNeighborAddress(
-                    address,
-                    paginaction + '.current',
-                ),
+                name: getFieldNeighborAddress(address, pagination + '.current'),
             });
             if (field.value == undefined) {
                 return 1;
@@ -79,7 +73,7 @@ function getPagination(
             const field = form.createField({
                 name: getFieldNeighborAddress(
                     address,
-                    paginaction + '.pageSize',
+                    pagination + '.pageSize',
                 ),
             });
             if (field.value == undefined) {
@@ -90,51 +84,49 @@ function getPagination(
         },
         getTotal: (): number | undefined => {
             const field = form.createField({
-                name: getFieldNeighborAddress(address, paginaction + '.total'),
+                name: getFieldNeighborAddress(address, pagination + '.total'),
             });
             return field?.value;
         },
     };
-    //重新当前页
-    const oldCurrent = paginactionWrapper.getCurrent();
-    const paginactionResult: PaginationTypeInner = {
+    // 重新当前页
+    const oldCurrent = paginationWrapper.getCurrent();
+    const paginationResult: PaginationTypeInner = {
         current: oldCurrent,
-        pageSize: paginactionWrapper.getPageSize(),
-        total: paginactionWrapper.getTotal(),
+        pageSize: paginationWrapper.getPageSize(),
+        total: paginationWrapper.getTotal(),
     };
-    if (paginactionResult.current < 1) {
-        paginactionResult.current = 1;
+    if (paginationResult.current < 1) {
+        paginationResult.current = 1;
     }
-    if (paginactionResult.total == undefined) {
-        paginactionResult.total = totalSize;
+    if (paginationResult.total == undefined) {
+        paginationResult.total = totalSize;
     }
-    let maxPage = Math.ceil(
-        paginactionResult.total / paginactionResult.pageSize,
-    );
+    let maxPage = Math.ceil(paginationResult.total / paginationResult.pageSize);
     if (maxPage < 1) {
         maxPage = 1;
     }
 
     useEffect(() => {
         if (oldCurrent < 1) {
-            paginactionWrapper.setCurrent(1);
+            paginationWrapper.setCurrent(1);
         }
         if (oldCurrent > maxPage) {
-            paginactionWrapper.setCurrent(maxPage);
+            paginationWrapper.setCurrent(maxPage);
         }
     }, [oldCurrent, maxPage]);
 
     let result: TablePaginationConfig = {
-        current: paginactionResult.current,
+        current: paginationResult.current,
         onChange: (current: number) => {
-            paginactionWrapper.setCurrent(current);
+            paginationWrapper.setCurrent(current);
         },
-        pageSize: paginactionResult.pageSize,
+        pageSize: paginationResult.pageSize,
         onShowSizeChange: (current: number, pageSize: number) => {
-            paginactionWrapper.setCurrent(current);
-            paginactionWrapper.setPageSize(pageSize);
+            paginationWrapper.setCurrent(current);
+            paginationWrapper.setPageSize(pageSize);
         },
-        total: paginactionResult.total,
+        total: paginationResult.total,
         showQuickJumper: paginationProps?.showQuickJumper,
         showSizeChanger: paginationProps?.showSizeChanger,
         pageSizeOptions: paginationProps?.pageSizeOptions,

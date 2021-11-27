@@ -5,13 +5,16 @@ import Tree from './Tree';
 import TreeSelect from './TreeSelect';
 import SpaceDivider from './SpaceDivider';
 import Hoverable from './Hoverable';
-import Result, { ResultSuccess, ResultFail } from './hooks/Result';
-import useQueryTable, {
+import type Result from './hooks/Result';
+import type { ResultSuccess, ResultFail } from './hooks/Result';
+import useQueryTable from './hooks/useQueryTable';
+import type {
     UseQueryTableOptions,
     UseQueryTableProps,
 } from './hooks/useQueryTable';
 import useQueryTableBoost from './hooks/useQueryTableBoost';
-import useQueryDetail, {
+import useQueryDetail from './hooks/useQueryDetail';
+import type {
     UseQueryDetailOptions,
     UseQueryDetailProps,
 } from './hooks/useQueryDetail';

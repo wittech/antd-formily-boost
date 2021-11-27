@@ -43,7 +43,7 @@ const QueryList: React.FC<any> = observer((props) => {
         {
             values: {
                 //在删除了最后一页数据后，会自动回跳
-                paginaction: { current: 1, pageSize: 10, total: 0 },
+                pagination: { current: 1, pageSize: 10, total: 0 },
                 list: [] as User[],
                 filter: {},
             },
@@ -59,7 +59,7 @@ const QueryList: React.FC<any> = observer((props) => {
                     };
                 });
                 onFieldInputValueChange(
-                    'paginaction.*(current,pageSize)',
+                    'pagination.*(current,pageSize)',
                     () => {
                         fetch();
                     },
@@ -76,12 +76,9 @@ const QueryList: React.FC<any> = observer((props) => {
         //正常是用useQuery传入的axios参数拉代码
         //let data = axios({});
         //我们这里用自己的数据
-        let result = model.findData(
-            form.values.filter,
-            form.values.paginaction,
-        );
+        let result = model.findData(form.values.filter, form.values.pagination);
         form.values.list = result.data;
-        form.values.paginaction.total = result.count;
+        form.values.pagination.total = result.count;
     });
     fetchTrigger = fetch;
     const querySchema = (
@@ -114,7 +111,7 @@ const QueryList: React.FC<any> = observer((props) => {
                 x-component="Table"
                 x-component-props={{
                     //传入分页信息
-                    paginaction: 'paginaction',
+                    pagination: 'pagination',
                     paginationProps: {
                         showQuickJumper: true,
                         showSizeChanger: true,
@@ -193,7 +190,7 @@ const QueryList: React.FC<any> = observer((props) => {
                                 <Button
                                     onClick={() => {
                                         data.filter = {};
-                                        data.paginaction.current = 1;
+                                        data.pagination.current = 1;
                                         fetch();
                                     }}
                                 >
