@@ -26,7 +26,7 @@ import RecursiveRow, { RecursiveRowProps } from './components/RecursiveRow';
 import getPagination, {
     PaginationPropsType,
     PaginationType,
-} from './member/paginaction';
+} from './member/pagination';
 import getVirtual, { VirtualScrollProps } from './member/virtual';
 import getTableConfig from './member/config';
 import getRecursiveRow from './member/recursiveRow';
@@ -44,7 +44,7 @@ import './index.css';
 
 type PropsType = {
     columnConfig?: string;
-    paginaction?: PaginationType;
+    pagination?: PaginationType;
     paginationProps?: PaginationPropsType;
     scroll?: RcTableProps<any>['scroll'];
     virtualScroll?: VirtualScrollProps;
@@ -87,7 +87,7 @@ const MyTable: MyTableType = observer((props: PropsType) => {
 
     const pagination = getPagination(
         value.length,
-        props.paginaction,
+        props.pagination,
         props.paginationProps,
     );
 
@@ -100,7 +100,7 @@ const MyTable: MyTableType = observer((props: PropsType) => {
         props.virtualScroll,
     );
 
-    //递归行，与展开行，只能二选一
+    // 递归行，与展开行，只能二选一
     let expandable: ExpandableConfig<any> | undefined;
     if (tableConfig.commonExpandedProps) {
         expandable = recursiveRow?.expandedProps;
@@ -173,7 +173,7 @@ MyTable.SubtreeAddition = MySubtreeAddition;
 
 export default MyTable;
 
-//这段代码仅仅为为了生成API文档的
+// 这段代码仅仅为为了生成API文档的
 const MyTableTypeForDoc: React.FC<PropsType> = () => {
     return <span />;
 };

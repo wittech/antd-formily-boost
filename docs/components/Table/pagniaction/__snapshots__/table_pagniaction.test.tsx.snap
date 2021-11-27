@@ -2627,7 +2627,7 @@ exports[`RemotePage 1`] = `
         </div>
       </div>
       <div>
-        {"data":[],"paginaction":{"current":1,"pageSize":10}}
+        {"data":[],"pagination":{"current":1,"pageSize":10}}
       </div>
     </form>
   </div>

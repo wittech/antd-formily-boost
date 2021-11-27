@@ -35,6 +35,6 @@ pagniaction 多一个 total 属性，就是后端分页，就这么简单。注�
 
 <API src="../../../../src/Table/index.tsx" exports='["MyTableTypeForDoc"]'>Table</API>
 
-<API src="../../../../src/Table/member/paginaction.tsx" exports='["PaginationTypeForDoc"]'>PaginationType</API>
+<API src="../../../../src/Table/member/pagination.tsx" exports='["PaginationTypeForDoc"]'>PaginationType</API>
 
-<API src="../../../../src/Table/member/paginaction.tsx" exports='["PaginationPropsTypeForDoc"]'>PaginationPropsType</API>
+<API src="../../../../src/Table/member/pagination.tsx" exports='["PaginationPropsTypeForDoc"]'>PaginationPropsType</API>

@@ -51,7 +51,7 @@ function useForm<T extends object = any>(
     let result = useMemo(() => {
         let initialValue: object | undefined;
         let isCacheData = false;
-        //先尝试从cacheKey拿
+        // 先尝试从cacheKey拿
         if (options?.cacheKey && globalCacheDisabled === false) {
             initialValue = formCache.get(options?.cacheKey);
             if (initialValue) {
@@ -67,7 +67,7 @@ function useForm<T extends object = any>(
         if (!initialValue) {
             initialValue = formValue.values;
             if (options?.cacheKey && globalCacheDisabled === false) {
-                //写入到cache里面
+                // 写入到cache里面
                 formCache.set(options?.cacheKey, initialValue);
             }
         }
@@ -80,7 +80,7 @@ function useForm<T extends object = any>(
 
     useEffect(() => {
         return () => {
-            //当前页面退出的时候，自动写入到缓存中
+            // 当前页面退出的时候，自动写入到缓存中
             if (options?.cacheKey && globalCacheDisabled === false) {
                 let originData = toJS(result.form.values);
                 formCache.set(options?.cacheKey, originData);

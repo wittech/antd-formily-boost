@@ -97,11 +97,11 @@ function useQuery(fetch: UseQueryFetch, options?: UseQueryOptions) {
                 options?.cacheKey === undefined ||
                 globalCacheDisabled === true
             ) {
-                //没有缓存的情况，不需要走请求池，也不需要走缓存
+                // 没有缓存的情况，不需要走请求池，也不需要走缓存
                 return await request(config);
             }
-            //有缓存的情况
-            //取缓存
+            // 有缓存的情况
+            // 取缓存
             let cacheKey =
                 options?.cacheKey + config.url + '_' + JSON.stringify(config);
             let cacheData = queryCache.get(cacheKey);
@@ -109,31 +109,31 @@ function useQuery(fetch: UseQueryFetch, options?: UseQueryOptions) {
             if (cacheData) {
                 const now = new Date().getTime();
                 if (cacheData.expireTime > now) {
-                    //未过期
+                    // 未过期
                     return {
                         status: 'success',
                         data: cacheData.data,
                     };
                 }
             }
-            //获取请求池的信息
+            // 获取请求池的信息
             if (requestCache.has(cacheKey) == false) {
                 requestCache.set(cacheKey, []);
             }
             let requestList = requestCache.get(cacheKey);
             let isFirst = requestList?.length == 0;
             if (isFirst == false) {
-                //被合并的那个
+                // 被合并的那个
                 return new Promise((resolve, reject) => {
-                    //将自身放入resolve就可以返回了
+                    // 将自身放入resolve就可以返回了
                     requestList?.push(resolve);
                 });
             } else {
-                //首次触发的请求的那个
+                // 首次触发的请求的那个
                 requestList?.push('nothing');
                 let result = await request(config);
 
-                //先通知其他请求完成了
+                // 先通知其他请求完成了
                 let currentRequestList = requestCache.get(cacheKey)!;
                 for (let i = 0; i != currentRequestList?.length; i++) {
                     let callback = currentRequestList[i];
@@ -141,10 +141,10 @@ function useQuery(fetch: UseQueryFetch, options?: UseQueryOptions) {
                         callback(result);
                     }
                 }
-                //清空当前key的请求池
+                // 清空当前key的请求池
                 requestCache.delete(cacheKey);
 
-                //写入缓存
+                // 写入缓存
                 if (result.status == 'fail') {
                     return result;
                 }
@@ -188,20 +188,20 @@ function useQuery(fetch: UseQueryFetch, options?: UseQueryOptions) {
 
     useEffect(() => {
         if (firstRender.current) {
-            //第一次渲染
+            // 第一次渲染
             if (options?.firstDidNotRefresh === true) {
-                //首次不fetch
+                // 首次不fetch
             } else {
-                //其他情况fetch
+                // 其他情况fetch
                 manualFetch();
             }
             firstRender.current = false;
         } else {
-            //非第一次渲染
+            // 非第一次渲染
             manualFetch();
         }
         return () => {
-            //当页面重刷的时候，标记以前请求失败
+            // 当页面重刷的时候，标记以前请求失败
             ref.current++;
         };
     }, []);

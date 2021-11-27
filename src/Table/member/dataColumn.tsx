@@ -1,4 +1,5 @@
 import { observer, RecursionField } from '@formily/react';
+import { toJS } from '@formily/reactive';
 import { ColumnGroupType, ColumnType } from 'antd/lib/table';
 import {
     ArrayIndexContextProvider,
@@ -10,6 +11,7 @@ import { getDataInIndex } from '../util';
 import { DataSourceType } from './virtual';
 import { Schema } from '@formily/json-schema';
 import { ReactElement } from 'react';
+const ST = require('@withub/stjs');
 
 type FastLabelProps = {
     rowData: any;
@@ -55,7 +57,7 @@ function getSplitIndex(
     }
     let realIndex = index.substring(0, i);
     if (realIndex == '') {
-        //容错逻辑，一般情况下不会出现
+        // 容错逻辑，一般情况下不会出现
         return { realIndex: index };
     }
     return { realIndex: realIndex };
@@ -103,17 +105,29 @@ function getDataColumns(
                         nextChildIndex =
                             tableConfig.dataConvertProps!.list[level];
                     }
+
                     function renderNormal(
                         columnSchema: ColumnSchema,
                         index: string,
                         nextChildIndex: string,
                     ) {
-                        //普通渲染方式
+                        // 直接返回数据，绕过field，这样做会失去effect，但是效率较高
+                        const rowData = getDataInIndex(data, index);
+
+                        //  TODO:如果rowRender.schema里面包括逻辑表达式，则做对应的处理后再继续渲染；
+                        const fieldSchema = columnSchema.columnProps?.enableExpr
+                            ? new Schema(
+                                  ST.transform(
+                                      columnSchema.schema.toJSON(),
+                                      toJS(rowData),
+                                  ),
+                              )
+                            : columnSchema.schema;
+
+                        // 普通渲染方式
                         const labelIndex = columnSchema.columnProps?.labelIndex;
                         const renderIndex = columnSchema.columnProps?.render;
                         if (labelIndex) {
-                            //直接返回数据，绕过field，这样做会失去effect，但是效率较高
-                            const rowData = getDataInIndex(data, index);
                             return (
                                 <FastLabel
                                     rowData={rowData}
@@ -121,7 +135,6 @@ function getDataColumns(
                                 />
                             );
                         } else if (renderIndex) {
-                            const rowData = getDataInIndex(data, index);
                             return (
                                 <FastRender
                                     rowData={rowData}
@@ -130,7 +143,7 @@ function getDataColumns(
                                 />
                             );
                         } else {
-                            //正常渲染模式
+                            // 正常渲染模式
                             return (
                                 <ArrayRecursiveContextProvider
                                     value={nextChildIndex}
@@ -138,7 +151,7 @@ function getDataColumns(
                                     <ArrayIndexContextProvider value={index}>
                                         <RecursionField
                                             name={index}
-                                            schema={columnSchema.schema}
+                                            schema={fieldSchema}
                                             onlyRenderProperties
                                         />
                                     </ArrayIndexContextProvider>
@@ -147,17 +160,17 @@ function getDataColumns(
                         }
                     }
                     if (rowRender.type == 'none') {
-                        //不渲染
+                        // 不渲染
                         return <></>;
                     } else if (rowRender.type == 'normal') {
-                        //普通渲染
+                        // 普通渲染
                         return renderNormal(
                             rowRender.schema,
                             record._index,
                             nextChildIndex,
                         );
                     } else if (rowRender.type == 'splitRow') {
-                        //合并行渲染
+                        // 合并行渲染
                         const { realIndex } = getSplitIndex(
                             record._index,
                             rowRender.level,

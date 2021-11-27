@@ -33,15 +33,13 @@ const sleep = (timeout: number) => {
         setTimeout(resolve, timeout);
     });
 };
-let globalState: { data: DataType[]; paginaction: PaginationType } = observable(
-    {
-        data: [],
-        paginaction: {
-            current: 1,
-            pageSize: 10,
-        },
+let globalState: { data: DataType[]; pagination: PaginationType } = observable({
+    data: [],
+    pagination: {
+        current: 1,
+        pageSize: 10,
     },
-);
+});
 
 export default () => {
     const fetch = async () => {
@@ -51,11 +49,11 @@ export default () => {
         tableField.componentProps.loading = false;
         const total = 1000;
         const begin =
-            (globalState.paginaction.current - 1) *
-            globalState.paginaction.pageSize;
+            (globalState.pagination.current - 1) *
+            globalState.pagination.pageSize;
         const end =
-            begin + globalState.paginaction.pageSize < total
-                ? begin + globalState.paginaction.pageSize
+            begin + globalState.pagination.pageSize < total
+                ? begin + globalState.pagination.pageSize
                 : total;
         let result: any[] = [];
         for (var i = begin; i < end; i++) {
@@ -66,8 +64,8 @@ export default () => {
         }
         batch(() => {
             //后端分页的特点是多了一个total属性，必须要设置该属性
-            //设置了paginaction的total值的都是后端分页模式
-            globalState.paginaction.total = total;
+            //设置了pagination的total值的都是后端分页模式
+            globalState.pagination.total = total;
             globalState.data = result;
         });
     };
@@ -76,7 +74,7 @@ export default () => {
             values: globalState,
             effects: () => {
                 onFieldInputValueChange(
-                    'paginaction.*(current,pageSize)',
+                    'pagination.*(current,pageSize)',
                     () => {
                         fetch();
                     },
@@ -96,7 +94,7 @@ export default () => {
                     name="data"
                     x-component="Table"
                     x-component-props={{
-                        paginaction: 'paginaction',
+                        pagination: 'pagination',
                         paginationProps: {
                             //默认的分页数量
                             defaultPageSize: 10,

@@ -28,12 +28,12 @@ export type DataSourceType = {
     _currentLevel: number;
     _isRecursive: boolean;
 
-    //可选属性
+    // 可选属性
     _children?: DataSourceType[];
     _style?: any;
     _rowSpan?: number[];
 
-    //以下属性仅仅是运算时使用，render时没用
+    // 以下属性仅仅是运算时使用，render时没用
     _begin?: number;
     _end?: number;
     _visible?: boolean;
@@ -51,7 +51,7 @@ function convertSplitDataSourceTypeInner(
     for (let i = 0; i != data.length; i++) {
         const index = preIndex != '' ? preIndex + '.' + i : i + '';
         if (currentSplitLevel == splitLevel.length) {
-            //底端
+            // 底端
             let initRowSpan = [];
             for (let j = 0; j != splitLevel.length; j++) {
                 initRowSpan.push(0);
@@ -64,7 +64,7 @@ function convertSplitDataSourceTypeInner(
             });
             count++;
         } else {
-            //中间端
+            // 中间端
             let oldSize = result.length;
             let childIndex = splitLevel[currentSplitLevel];
             let child = data[i][childIndex];
@@ -111,7 +111,7 @@ function getDataSourceRecursive(
     dataConvert: DataConvertType,
 ): DataSourceType[] {
     if (dataConvert.type == 'split') {
-        //split数据的提前处理
+        // split数据的提前处理
         return convertSplitData(data, preIndex, currentLevel, dataConvert);
     }
     let result: DataSourceType[] = [];
@@ -164,7 +164,7 @@ function getNormalVirtual(
     const visibleCount = Math.ceil(config.totalHeight / config.itemHeight) + 6;
     let firstIndex = 0;
     firstIndex = Math.floor(config.scrollTop / config.itemHeight);
-    //往前3条
+    // 往前3条
     if (firstIndex - 3 >= 0) {
         firstIndex = firstIndex - 3;
     }
@@ -175,7 +175,7 @@ function getNormalVirtual(
     const visibleData: DataSourceType[] = [];
     for (let i = firstIndex; i != endIndex; i++) {
         let _style: { height?: string } = {
-            //默认值
+            // 默认值
             height: config.itemHeight + 'px',
         };
         if (i == firstIndex && firstIndex != 0) {
@@ -203,7 +203,7 @@ type VirtualRecursivePropsType = {
     expandedIndex: string;
 };
 
-//计算每行占用的高度
+// 计算每行占用的高度
 function getRecursiveHeightDataSource(
     prevHeight: number,
     preIndex: string,
@@ -253,16 +253,16 @@ function getRecursiveHeightDataSource(
                     );
             }
 
-            //末端高度为，自身高度，以及所有子children的高度相加
+            // 末端高度为，自身高度，以及所有子children的高度相加
             if (childrenData.length != 0) {
                 single._children = childrenData;
             } else if (children && children.length != 0) {
-                //对于原数据含有子数据的，我们也要填充一个空数组进去，以显示expand图标
+                // 对于原数据含有子数据的，我们也要填充一个空数组进去，以显示expand图标
                 single._children = [];
             }
         }
 
-        //写入当前的level
+        // 写入当前的level
         single._end =
             single._begin! + config.itemHeight * (totalChildrenCount + 1);
         prevHeight = single._end;
@@ -272,10 +272,10 @@ function getRecursiveHeightDataSource(
             single._begin <= config.scrollTop + config.totalHeight + 100 &&
             single._end >= config.scrollTop - 100
         ) {
-            //该区块可见
+            // 该区块可见
             single._visible = true;
         } else {
-            //该区块不可见
+            // 该区块不可见
             single._visible = false;
         }
         dataSource.push(single);
@@ -283,7 +283,7 @@ function getRecursiveHeightDataSource(
     return [dataSource, allTotalChildrenCount];
 }
 
-//从每行占用的行高来计算，是否需要填写这个页面
+// 从每行占用的行高来计算，是否需要填写这个页面
 function getRecursiveVirtualDataSource(
     dataSource: DataSourceType[],
     itemHeight: number,
@@ -292,15 +292,15 @@ function getRecursiveVirtualDataSource(
     for (var i = 0; i != dataSource.length; i++) {
         let single = dataSource[i];
         if (single._visible == true) {
-            //可见
+            // 可见
             if (i - 1 >= 0 && dataSource[i - 1]._visible == false) {
-                //前一个不可见
+                // 前一个不可见
                 const end = dataSource[i - 1]._end;
                 let begin = dataSource[i - 1]._begin;
                 if (i - 1 != 0) {
                     begin = dataSource[0]._begin;
                 }
-                //撑起高度的虚拟块，没有_children
+                // 撑起高度的虚拟块，没有_children
                 let prevSingle = {
                     ...dataSource[i - 1],
                     _style: {
@@ -331,15 +331,15 @@ function getRecursiveVirtualDataSource(
 
             result.push(single);
         } else {
-            //不可见
+            // 不可见
             if (i - 1 >= 0 && dataSource[i - 1]._visible == true) {
-                //前一个可见
+                // 前一个可见
                 let end = single._end;
                 const begin = single._begin;
                 if (i != dataSource.length - 1) {
                     end = dataSource[dataSource.length - 1]._end;
                 }
-                //撑起高度的虚拟块，没有_children
+                // 撑起高度的虚拟块，没有_children
                 let nextSingle = {
                     ...single,
                     _style: {
@@ -348,7 +348,7 @@ function getRecursiveVirtualDataSource(
                     _children: undefined,
                 };
                 result.push(nextSingle);
-                //可以提前结束了
+                // 可以提前结束了
                 break;
             }
         }
@@ -356,9 +356,9 @@ function getRecursiveVirtualDataSource(
     return result;
 }
 
-//计算树形数据的virtual，这是整个项目中最复杂的部分
-//这里的时间不是极限的，还可以进一步提升，
-//高度不是每次render的时候重新计算，而是缓存一个本地数据，然后当data变化的时候，track同步来计算新数据。最后使用线段树来优化区间和操作
+// 计算树形数据的virtual，这是整个项目中最复杂的部分
+// 这里的时间不是极限的，还可以进一步提升，
+// 高度不是每次render的时候重新计算，而是缓存一个本地数据，然后当data变化的时候，track同步来计算新数据。最后使用线段树来优化区间和操作
 function getRecursiveVirtual(
     data: any[],
     virtualRecursiveProps: VirtualRecursivePropsType,
@@ -385,17 +385,17 @@ function getRecursiveVirtual(
     return { dataSource: dataSource, onRow };
 }
 
-//虚拟列表的做法与用react-window的不同，它仅仅就是将视图的data传入Table组件而已，而是将头部与底部的rowHeight扩大来使得滚动条可用
-//这样做的好处在于：
-//* 可以支持原有的Table组件特性，column的fixed，render，width，行选择的radio，支持rowSpan与colSpan
-//* 使用react-window的效率更高，但是以上所有特性都会丢失
-//* 支持recursiveRow与childrenRow
-//* 支持radio selection
-//FIXME 暂时发现的问题有：
-//* virtual暂时对checkbox的rowSelection的支持不完整，主要在于传入Table组件的数据仅仅是一小部分，一小部分点击完毕后，会误以为已经全选
-//* 对expandable的支持不太完美，在底部行进行expandable会有点小问题
-//TODO 未来要新增的功能有：
-//* 向外部提供scroll控制，滚动到指定的位置
+// 虚拟列表的做法与用react-window的不同，它仅仅就是将视图的data传入Table组件而已，而是将头部与底部的rowHeight扩大来使得滚动条可用
+// 这样做的好处在于：
+// * 可以支持原有的Table组件特性，column的fixed，render，width，行选择的radio，支持rowSpan与colSpan
+// * 使用react-window的效率更高，但是以上所有特性都会丢失
+// * 支持recursiveRow与childrenRow
+// * 支持radio selection
+// FIXME 暂时发现的问题有：
+// * virtual暂时对checkbox的rowSelection的支持不完整，主要在于传入Table组件的数据仅仅是一小部分，一小部分点击完毕后，会误以为已经全选
+// * 对expandable的支持不太完美，在底部行进行expandable会有点小问题
+// TODO 未来要新增的功能有：
+// * 向外部提供scroll控制，滚动到指定的位置
 let globalClassId = 10001;
 
 function getVirtualConfig(
@@ -403,7 +403,7 @@ function getVirtualConfig(
     virtualScroll: VirtualScrollProps,
 ): VirtualConfig {
     function getHeight(): number {
-        //未设置时
+        // 未设置时
         if (!virtualScroll?.itemHeight) {
             return 55;
         }
@@ -436,7 +436,7 @@ function getVirtualConfig(
         tableNode.current = document.querySelector(
             '.' + className + ' .ant-table-body',
         )!;
-        //节流函数，以避免过度渲染
+        // 节流函数，以避免过度渲染
         const listener = _throttle(() => {
             setScrollTop(tableNode.current!.scrollTop);
             console.log('scrollTop', tableNode.current!.scrollTop, scroll!.y);
@@ -467,7 +467,7 @@ function getVirtual(
     scroll?: RcTableProps<any>['scroll'],
     virtualScroll?: VirtualScrollProps,
 ): { className: string[]; dataSource: DataSourceType[]; onRow: any } {
-    //不打开虚拟滚动
+    // 不打开虚拟滚动
     if (!scroll || !virtualScroll) {
         return {
             className: [],
@@ -492,14 +492,14 @@ function getVirtual(
         };
     }
 
-    //打开虚拟滚动
+    // 打开虚拟滚动
     const virtualConfig = getVirtualConfig(scroll, virtualScroll);
     let virtual: { dataSource: DataSourceType[]; onRow: any };
     if (!tableConfig.commonExpandedProps?.expandedIndex) {
-        //普通列表虚拟滚动
+        // 普通列表虚拟滚动
         virtual = getNormalVirtual(data, virtualConfig);
     } else {
-        //树形数据虚拟滚动
+        // 树形数据虚拟滚动
         virtual = getRecursiveVirtual(
             data,
             {
